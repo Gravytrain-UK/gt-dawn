@@ -156,7 +156,7 @@
             aria-controls="Slider-{{ section.id }}"
           >
             <span class="svg-wrapper">
-              {{- 'icon-caret.svg' | inline_asset_content -}}
+              {% render 'inline-svg', icon: 'icon-caret' %}
             </span>
           </button>
           <div class="slider-counter caption">
@@ -173,7 +173,7 @@
             aria-controls="Slider-{{ section.id }}"
           >
             <span class="svg-wrapper">
-              {{- 'icon-caret.svg' | inline_asset_content -}}
+              {% render 'inline-svg', icon: 'icon-caret' %}
             </span>
           </button>
         </div>

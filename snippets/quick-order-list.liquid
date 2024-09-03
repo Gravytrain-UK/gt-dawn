@@ -144,7 +144,7 @@
                 >
                   <button class="button button--tertiary" type="button">
                     <span class="svg-wrapper">
-                      {{- 'icon-remove.svg' | inline_asset_content -}}
+                      {% render 'inline-svg', icon: 'icon-remove' %}
                     </span>
                     <span class="text-body">{{ 'sections.quick_order_list.remove_all' | t }}</span>
                   </button>
@@ -154,7 +154,7 @@
             <span class="quick-order-list__message caption-large" role="status">
               <span class="quick-order-list__message-icon hidden">
                 <span class="svg-wrapper">
-                  {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                  {% render 'inline-svg', icon: 'icon-checkmark' %}
                 </span>
               </span>
               <span class="quick-order-list__message-text"></span>
@@ -235,7 +235,7 @@
                 >
                   <button class="button button--tertiary" type="button">
                     <span class="svg-wrapper">
-                      {{- 'icon-remove.svg' | inline_asset_content -}}
+                      {% render 'inline-svg', icon: 'icon-remove' %}
                     </span>
 
                     <span class="text-body">{{ 'sections.quick_order_list.remove_all' | t }}</span>
@@ -246,7 +246,7 @@
             <span class="quick-order-list__message caption-large" role="status">
               <span class="quick-order-list__message-icon hidden">
                 <span class="svg-wrapper">
-                  {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                  {% render 'inline-svg', icon: 'icon-checkmark' %}
                 </span>
               </span>
               <span class="quick-order-list__message-text"></span>
