@@ -1,0 +1,35 @@
+name: Deploy Shopify Theme (Test)
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - feature/github-actions  # Change 'feature/github-actions' to main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14' # Specify the Node.js version required
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli @shopify/theme
+
+      - name: Authenticate Shopify CLI
+        env:
+          SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
+        run: echo $SHOPIFY_CLI_AUTH_TOKEN | shopify login --store ${{ secrets.SHOPIFY_STORE_URL }} --password-stdin
+
+      - name: Deploy to Shopify Store
+        env:
+          SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
+          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
+          SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
+        run: shopify theme push --allow-live --themeid=${{ secrets.SHOPIFY_THEME_ID }}
