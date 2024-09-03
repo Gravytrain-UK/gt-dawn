@@ -1,5 +1,3 @@
-# .github/workflows/deploy-shopify-theme.yml
-
 name: Deploy Shopify Theme
 
 on:
@@ -16,9 +14,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Shopify CLI
+    - name: Install Shopify CLI Dependencies
       run: |
-        curl -s https://shopify.dev/tools/cli/install.sh | sh
+        sudo apt-get update
+        sudo apt-get install -y ruby-full ruby-bundler ruby-dev
+
+    - name: Install Shopify CLI
+      run: |
+        gem install shopify-cli
         shopify version
 
     - name: Deploy to Shopify
