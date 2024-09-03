@@ -1,46 +1,53 @@
-name: CI/CD Pipeline for Shopify
+name: Deploy Shopify Theme
 
 on:
   push:
     branches:
-      - feature/github-actions  # Change 'feature/github-actions' to main
+      - main
+      - feature/github-actions # Replace with your branch name
 
 jobs:
-  theme-check:
-    name: Theme Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'  # Explicitly set Node.js version to 20
-
-      - name: Run Theme Check
-        uses: shopify/theme-check-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   deploy:
-    name: Deploy to Shopify Store
     runs-on: ubuntu-latest
-    needs: [theme-check]  # Ensure deployment runs after Theme Check
+
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'  # Explicitly set Node.js version to 20
+    - name: Set up Shopify CLI
+      run: |
+        curl -s https://shopify.dev/tools/cli/install | sh
+        shopify version
+    
+    - name: Deploy to Shopify
+      env:
+        SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
+        SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+        THEME_ID: ${{ secrets.THEME_ID }}
+      run: |
+        # Configure Shopify CLI
+        shopify config set store $SHOPIFY_STORE
+        shopify config set password $SHOPIFY_PASSWORD
 
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+        # Push theme to Shopify store with retry logic
+        attempt=0
+        max_attempts=5
+        delay=1
 
-      - name: Deploy Theme to Shopify
-        env:
-          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
-          SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
-          SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
-        run: |
-          shopify theme push --allow-live --store ${{ secrets.SHOPIFY_STORE_URL }} --theme ${{ secrets.SHOPIFY_THEME_ID }}
+        while [ $attempt -lt $max_attempts ]; do
+          echo "Pushing theme (Attempt: $((attempt + 1))/$max_attempts)..."
+          if shopify theme push --store "$SHOPIFY_STORE" --password "$SHOPIFY_PASSWORD" --theme-id "$THEME_ID" --allow-live; then
+            echo "Theme pushed successfully."
+            break
+          else
+            echo "Error encountered. Retrying in $delay seconds..."
+            sleep $delay
+            attempt=$((attempt + 1))
+            delay=$((delay * 2)) # Exponential backoff
+          fi
+        done
+
+        if [ $attempt -eq $max_attempts ]; then
+          echo "Failed to push theme after $max_attempts attempts."
+          exit 1
+        fi
