@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/github-actions # Replace with your branch name
+      - feature/github-actions # Replace with your branch name as needed
 
 jobs:
   deploy:
@@ -18,7 +18,7 @@ jobs:
       run: |
         curl -s https://shopify.dev/tools/cli/install | sh
         shopify version
-    
+
     - name: Deploy to Shopify
       env:
         SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
@@ -29,7 +29,7 @@ jobs:
         shopify config set store $SHOPIFY_STORE
         shopify config set password $SHOPIFY_PASSWORD
 
-        # Push theme to Shopify store with retry logic
+        # Retry logic to push theme to Shopify store
         attempt=0
         max_attempts=5
         delay=1
