@@ -20,7 +20,7 @@ delay=1
 
 while [ $attempt -lt $max_attempts ]; do
   echo "Pushing theme (Attempt: $((attempt + 1))/$max_attempts)..."
-  if shopify theme push --store "$SHOPIFY_STORE" --password "$SHOPIFY_PASSWORD" --theme-id "$THEME_ID" --allow-live; then
+  if shopify theme push --store "$SHOPIFY_STORE" --password "$SHOPIFY_PASSWORD" --theme "$THEME_ID" --allow-live; then
     echo "Theme pushed successfully."
     break
   else
