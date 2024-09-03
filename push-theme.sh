@@ -30,7 +30,7 @@ jobs:
 
     - name: Deploy to Shopify
       env:
-        SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
+        SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
         SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
         THEME_ID: ${{ secrets.THEME_ID }}
       run: |
@@ -47,7 +47,7 @@ jobs:
 
         while [ $attempt -lt $max_attempts ]; do
           echo "Pushing theme (Attempt: $((attempt + 1))/$max_attempts)..."
-          if shopify theme push --password="$SHOPIFY_PASSWORD" --store="$SHOPIFY_STORE" --theme-id="$THEME_ID" --allow-live; then
+          if shopify theme push --store="$SHOPIFY_STORE" --theme-id="$THEME_ID" --allow-live; then
             echo "Theme pushed successfully."
             break
           else
