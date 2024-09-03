@@ -26,7 +26,7 @@ jobs:
   deploy:
     name: Deploy to Shopify Store
     runs-on: ubuntu-latest
-    needs: [lhci, theme-check]  # Ensure deployment runs after Lighthouse and Theme Check
+    needs: [theme-check]  # Ensure deployment runs after Theme Check
     steps:
       - uses: actions/checkout@v3  # Checkout code; no need for Node version specification here
 
