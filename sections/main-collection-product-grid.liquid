@@ -67,7 +67,7 @@
                   {%- endfor -%}
                 </select>
                 <span class="svg-wrapper">
-                  {{- 'icon-caret.svg' | inline_asset_content -}}
+                  {% render 'inline-svg', icon: 'icon-caret' %}
                 </span>
               </div>
             </div>
