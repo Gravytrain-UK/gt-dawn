@@ -43,4 +43,4 @@ jobs:
           SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
           SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
         run: |
-          shopify theme push --allow-live --themeid=${{ secrets.SHOPIFY_THEME_ID }}
+          shopify theme push --store ${{ secrets.SHOPIFY_STORE_URL }} --themeid ${{ secrets.SHOPIFY_THEME_ID }}
