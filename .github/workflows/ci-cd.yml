@@ -22,9 +22,7 @@ jobs:
     - name: Install Shopify CLI
       run: |
         gem install --user-install shopify-cli
-        echo "export PATH=\$HOME/.local/share/gem/ruby/$(ls /var/lib/gems/)/bin:\$PATH" >> $GITHUB_ENV
-        echo 'export PATH="$HOME/.local/share/gem/ruby/$(ls /var/lib/gems/)/bin:$PATH"' >> ~/.bashrc
-        echo 'export PATH="$HOME/.local/share/gem/ruby/$(ls /var/lib/gems/)/bin:$PATH"' >> ~/.profile
+        echo "export PATH=\$HOME/.local/share/gem/ruby/$(ls ~/.local/share/gem/ruby)/bin:\$PATH" >> $GITHUB_ENV
 
     - name: Deploy to Shopify
       env:
@@ -32,6 +30,12 @@ jobs:
         SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
         THEME_ID: ${{ secrets.THEME_ID }}
       run: |
+        # Source the updated PATH
+        source $GITHUB_ENV
+        
+        # Verify Shopify CLI installation
+        shopify version
+
         # Configure Shopify CLI
         shopify config set store "$SHOPIFY_STORE"
         shopify config set password "$SHOPIFY_PASSWORD"
