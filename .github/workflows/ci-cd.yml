@@ -22,8 +22,9 @@ jobs:
     - name: Install Shopify CLI
       run: |
         gem install --user-install shopify-cli
-        export PATH="$HOME/.local/share/gem/ruby/$(ls /var/lib/gems/)/bin:$PATH"
-        shopify version
+        echo "export PATH=\$HOME/.local/share/gem/ruby/$(ls /var/lib/gems/)/bin:\$PATH" >> $GITHUB_ENV
+        echo 'export PATH="$HOME/.local/share/gem/ruby/$(ls /var/lib/gems/)/bin:$PATH"' >> ~/.bashrc
+        echo 'export PATH="$HOME/.local/share/gem/ruby/$(ls /var/lib/gems/)/bin:$PATH"' >> ~/.profile
 
     - name: Deploy to Shopify
       env:
