@@ -1,3 +1,5 @@
+# .github/workflows/deploy-shopify-theme.yml
+
 name: Deploy Shopify Theme
 
 on:
@@ -16,7 +18,7 @@ jobs:
 
     - name: Set up Shopify CLI
       run: |
-        curl -s https://shopify.dev/tools/cli/install | sh
+        curl -s https://shopify.dev/tools/cli/install.sh | sh
         shopify version
 
     - name: Deploy to Shopify
@@ -26,8 +28,8 @@ jobs:
         THEME_ID: ${{ secrets.THEME_ID }}
       run: |
         # Configure Shopify CLI
-        shopify config set store $SHOPIFY_STORE
-        shopify config set password $SHOPIFY_PASSWORD
+        shopify config set store "$SHOPIFY_STORE"
+        shopify config set password "$SHOPIFY_PASSWORD"
 
         # Retry logic to push theme to Shopify store
         attempt=0
@@ -36,7 +38,7 @@ jobs:
 
         while [ $attempt -lt $max_attempts ]; do
           echo "Pushing theme (Attempt: $((attempt + 1))/$max_attempts)..."
-          if shopify theme push --store "$SHOPIFY_STORE" --password "$SHOPIFY_PASSWORD" --theme "$THEME_ID" --allow-live; then
+          if shopify theme push --store "$SHOPIFY_STORE" --password "$SHOPIFY_PASSWORD" --theme-id "$THEME_ID" --allow-live; then
             echo "Theme pushed successfully."
             break
           else
