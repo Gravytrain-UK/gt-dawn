@@ -7,11 +7,11 @@ on:
 
 jobs:
 
-  theme-check:
+   theme-check:
     name: Theme Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # Checkout code; no need for Node version specification here
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -21,14 +21,14 @@ jobs:
       - name: Run Theme Check
         uses: shopify/theme-check-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # Using the default GitHub token
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     name: Deploy to Shopify Store
     runs-on: ubuntu-latest
-    needs: [theme-check]  # Ensure deployment runs after Theme Check
+    needs: [theme-check]  # Ensure deployment runs after Lighthouse and Theme Check
     steps:
-      - uses: actions/checkout@v3  # Checkout code; no need for Node version specification here
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -38,13 +38,11 @@ jobs:
       - name: Install Shopify CLI
         run: npm install -g @shopify/cli @shopify/theme
 
-      - name: Authenticate Shopify CLI
-        env:
-          SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
-        run: echo $SHOPIFY_CLI_AUTH_TOKEN | shopify login --store ${{ secrets.SHOPIFY_STORE_URL }} --password-stdin
-
       - name: Deploy Theme to Shopify
         env:
           SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
           SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
-        run: shopify theme push --allow-live --themeid=${{ secrets.SHOPIFY_THEME_ID }}
+          SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
+        run: |
+          export SHOPIFY_CLI_AUTH_TOKEN=${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
+          shopify theme push --allow-live --themeid=${{ secrets.SHOPIFY_THEME_ID }}
