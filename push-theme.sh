@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# push-theme.sh
+
 # Load environment variables from .env file
 set -a
 source .env

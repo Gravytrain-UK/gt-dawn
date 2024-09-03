@@ -17,12 +17,14 @@ jobs:
     - name: Install Shopify CLI Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y ruby-full ruby-bundler ruby-dev
+        sudo apt-get install -y ruby-full ruby-bundler ruby-dev build-essential
 
     - name: Install Shopify CLI
       run: |
+        echo "Installing Shopify CLI..."
         gem install --user-install shopify-cli
-        echo "export PATH=\$HOME/.local/share/gem/ruby/$(ls ~/.local/share/gem/ruby)/bin:\$PATH" >> $GITHUB_ENV
+        # Dynamically add Ruby Gems to PATH
+        echo "PATH=$(ruby -e 'print Gem.user_dir')/bin:$PATH" >> $GITHUB_ENV
 
     - name: Deploy to Shopify
       env:
@@ -30,10 +32,10 @@ jobs:
         SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
         THEME_ID: ${{ secrets.THEME_ID }}
       run: |
-        # Source the updated PATH
+        # Load the updated PATH
         source $GITHUB_ENV
-        
-        # Verify Shopify CLI installation
+
+        # Check Shopify CLI version
         shopify version
 
         # Configure Shopify CLI
