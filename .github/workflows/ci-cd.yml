@@ -3,7 +3,7 @@ name: CI/CD Pipeline for Shopify
 on:
   push:
     branches:
-      - dev  # Replace 'dev' with your test branch or 'main' for production
+      - feature/github-actions  # Change 'feature/github-actions' to main
 
 jobs:
   lhci:
