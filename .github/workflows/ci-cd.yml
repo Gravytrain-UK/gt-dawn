@@ -1,23 +1,48 @@
-name: Deploy Shopify Theme (Test)
+name: CI/CD Pipeline for Shopify
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
-      - feature/github-actions  # Change 'feature/github-actions' to main
+      - dev  # Replace 'dev' with your test branch or 'main' for production
 
 jobs:
-  deploy:
+  lhci:
+    name: Lighthouse CI
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      
+      - name: Run Lighthouse CI
+        uses: shopify/lighthouse-ci-action@v1
+        with:
+          store: ${{ secrets.SHOPIFY_STORE_URL }}
+          access_token: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}  # Using CLI token if applicable
+          collection_handle: all
+          lhci_github_app_token: ${{ secrets.GITHUB_TOKEN }}   # Using the default GitHub token
+          pull_theme: ${{ secrets.SHOPIFY_THEME_ID }}
+
+  theme-check:
+    name: Theme Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Theme Check
+        uses: shopify/theme-check-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Using the default GitHub token
+
+  deploy:
+    name: Deploy to Shopify Store
+    runs-on: ubuntu-latest
+    needs: [lhci, theme-check]  # Ensure deployment runs after Lighthouse and Theme Check
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14' # Specify the Node.js version required
+          node-version: '14'
 
       - name: Install Shopify CLI
         run: npm install -g @shopify/cli @shopify/theme
@@ -27,9 +52,8 @@ jobs:
           SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
         run: echo $SHOPIFY_CLI_AUTH_TOKEN | shopify login --store ${{ secrets.SHOPIFY_STORE_URL }} --password-stdin
 
-      - name: Deploy to Shopify Store
+      - name: Deploy Theme to Shopify
         env:
-          SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
           SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
           SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
         run: shopify theme push --allow-live --themeid=${{ secrets.SHOPIFY_THEME_ID }}
