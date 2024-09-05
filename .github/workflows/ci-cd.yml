@@ -1,29 +1,38 @@
-name: CI/CD Pipeline for Shopify
+# .github/workflows/deploy-shopify-theme.yml
+
+name: Deploy Shopify Theme
 
 on:
   push:
     branches:
+      - main
       - feature/github-actions  # Change 'feature/github-actions' to main
 
 jobs:
   deploy:
-    name: Deploy to Shopify Store
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'
+    - name: Set up Ruby environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ruby-full build-essential
+        gem install bundler
 
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+    - name: Install Shopify CLI
+      run: |
+        gem install shopify-cli
 
-      - name: Deploy Theme to Shopify
-        env:
-          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
-          SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
-          SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_CLI_AUTH_TOKEN }}
-          SHOPIFY_FLAG_FORCE: 1
-        run: shopify theme push --verbose --allow-live --store=${{ secrets.SHOPIFY_STORE_URL }} --theme=${{ secrets.SHOPIFY_THEME_ID }}
+    - name: Deploy to Shopify
+      env:
+        SHOPIFY_API_TOKEN: ${{ secrets.SHOPIFY_API_TOKEN }}
+        SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+      run: |
+        # Authenticate Shopify CLI
+        shopify login --store=$SHOPIFY_STORE --password=$SHOPIFY_API_TOKEN
+
+        # Push theme to Shopify store
+        shopify theme push --allow-live
