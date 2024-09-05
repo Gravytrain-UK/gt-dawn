@@ -34,13 +34,12 @@ jobs:
         export PATH=$(ruby -e 'print Gem.user_dir')/bin:$PATH
         echo "Updated PATH: $PATH"
         ls $(ruby -e 'print Gem.user_dir')/bin # List contents to verify Shopify CLI installation
-        which shopify # Check if Shopify is in the PATH
+        which shopify # Check if Shopify CLI is in the PATH
         shopify version
 
     - name: Deploy to Shopify
       env:
         SHOPIFY_API_TOKEN: ${{ secrets.SHOPIFY_API_TOKEN }}
-        SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
         SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
       run: |
         # Directly export the PATH for this session
@@ -50,4 +49,4 @@ jobs:
         export SHOPIFY_CLI_AUTH_TOKEN=$SHOPIFY_API_TOKEN
 
         # Push theme to Shopify store
-        shopify theme push --store "$SHOPIFY_STORE_URL" --theme "$SHOPIFY_THEME_ID" --allow-live
+        shopify theme push --theme "$SHOPIFY_THEME_ID" --allow-live
