@@ -23,22 +23,26 @@ jobs:
 
     - name: Install Shopify CLI Locally
       run: |
+        echo "Installing Shopify CLI..."
         gem install --user-install shopify-cli
-        echo "export PATH=\$HOME/.local/share/gem/ruby/$(ls ~/.local/share/gem/ruby)/bin:\$PATH" >> $GITHUB_ENV
+        # Add Ruby Gems to PATH
+        echo "export PATH=$(ruby -e 'print Gem.user_dir')/bin:\$PATH" >> $GITHUB_ENV
+
+    - name: Verify and Debug PATH
+      run: |
+        source $GITHUB_ENV
+        echo "Updated PATH: $PATH"
+        ls $(ruby -e 'print Gem.user_dir')/bin # List contents to verify shopify CLI installation
+        which shopify # Check if shopify is in the PATH
+        shopify version
 
     - name: Deploy to Shopify
       env:
-        SHOPIFY_API_TOKEN: ${{ secrets.SHOPIFY_API_TOKEN }}
+        SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_API_TOKEN }}
         SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
       run: |
-        # Load the updated PATH
-        source $GITHUB_ENV
-
-        # Check Shopify CLI version
-        shopify version
-
         # Authenticate using the API token
-        export SHOPIFY_CLI_AUTH_TOKEN=$SHOPIFY_API_TOKEN
+        export SHOPIFY_CLI_AUTH_TOKEN=$SHOPIFY_CLI_AUTH_TOKEN
 
         # Push theme to Shopify store
         shopify theme push --store "$SHOPIFY_STORE" --allow-live
