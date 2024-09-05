@@ -30,10 +30,11 @@ jobs:
 
     - name: Verify and Debug PATH
       run: |
-        source $GITHUB_ENV
+        # Directly export the PATH for this session
+        export PATH=$(ruby -e 'print Gem.user_dir')/bin:$PATH
         echo "Updated PATH: $PATH"
-        ls $(ruby -e 'print Gem.user_dir')/bin # List contents to verify shopify CLI installation
-        which shopify # Check if shopify is in the PATH
+        ls $(ruby -e 'print Gem.user_dir')/bin # List contents to verify Shopify CLI installation
+        which shopify # Check if Shopify is in the PATH
         shopify version
 
     - name: Deploy to Shopify
@@ -41,6 +42,9 @@ jobs:
         SHOPIFY_CLI_AUTH_TOKEN: ${{ secrets.SHOPIFY_API_TOKEN }}
         SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
       run: |
+        # Directly export the PATH for this session
+        export PATH=$(ruby -e 'print Gem.user_dir')/bin:$PATH
+
         # Authenticate using the API token
         export SHOPIFY_CLI_AUTH_TOKEN=$SHOPIFY_CLI_AUTH_TOKEN
 
