@@ -50,4 +50,4 @@ jobs:
         export SHOPIFY_CLI_AUTH_TOKEN=$SHOPIFY_API_TOKEN
 
         # Push theme to Shopify store
-        shopify theme push --store="$SHOPIFY_STORE_URL" --theme="$SHOPIFY_THEME_ID" --allow-live
+        shopify theme push --store "$SHOPIFY_STORE_URL" --theme "$SHOPIFY_THEME_ID" --allow-live
