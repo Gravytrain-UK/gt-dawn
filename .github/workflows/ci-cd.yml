@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - feature/github-actions  # Change 'feature/github-actions' to main
+      - feature/* # Adjust branches as needed
 
 jobs:
   deploy:
@@ -20,19 +20,25 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y ruby-full build-essential
-        gem install bundler
 
-    - name: Install Shopify CLI
+    - name: Install Shopify CLI Locally
       run: |
-        gem install shopify-cli
+        gem install --user-install shopify-cli
+        echo "export PATH=\$HOME/.local/share/gem/ruby/$(ls ~/.local/share/gem/ruby)/bin:\$PATH" >> $GITHUB_ENV
 
     - name: Deploy to Shopify
       env:
         SHOPIFY_API_TOKEN: ${{ secrets.SHOPIFY_API_TOKEN }}
         SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
       run: |
-        # Authenticate Shopify CLI
-        shopify login --store=$SHOPIFY_STORE --password=$SHOPIFY_API_TOKEN
+        # Load the updated PATH
+        source $GITHUB_ENV
+
+        # Check Shopify CLI version
+        shopify version
+
+        # Authenticate using the API token
+        export SHOPIFY_CLI_AUTH_TOKEN=$SHOPIFY_API_TOKEN
 
         # Push theme to Shopify store
-        shopify theme push --allow-live
+        shopify theme push --store "$SHOPIFY_STORE" --allow-live
