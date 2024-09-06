@@ -1,38 +1,74 @@
 {{ 'section-hero-banner.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
-  /* General styling for the hero banner */
+  /* Container for the hero banner */
   #HeroBanner-{{ section.id }} {
     position: relative;
     width: 100%;
     overflow: hidden;
   }
 
-  /* Styles for images */
-  #HeroBanner-{{ section.id }} .hero-banner__image {
+  #HeroBanner-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    background-color: rgba(0, 0, 0, {{ section.settings.image_overlay_opacity | divided_by: 100 }}); /* Image Overlay Opacity */
+    z-index: 1;
   }
 
-  /* Styles for content positioning and visibility */
-  #HeroBanner-{{ section.id }} .hero-banner__content {
+  .hero-banner__media {
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
+    z-index: 0;
+  }
+
+  /* Content positioning */
+  .hero-banner__content {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    text-align: center;
+    z-index: 2;
+    text-align: {{ section.settings.desktop_content_alignment }};
     color: {{ section.settings.text_color }};
+    width: 100%;
+    padding: 0 20px;
   }
 
-  /* Styles for buttons */
-  #HeroBanner-{{ section.id }} .hero-banner__buttons {
+  @media screen and (min-width: 750px) {
+    .hero-banner__content {
+      justify-content: {{ section.settings.desktop_content_position | replace: 'middle', 'center' }};
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero-banner__content {
+      text-align: {{ section.settings.mobile_content_alignment }};
+    }
+  }
+
+  .hero-banner__heading {
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  .hero-banner__paragraph {
+    margin: 10px 0;
+  }
+
+  .hero-banner__buttons {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 10px;
   }
 
-  #HeroBanner-{{ section.id }} .hero-banner__button {
+  .hero-banner__button {
     padding: 10px 20px;
     text-decoration: none;
     color: {{ section.settings.button_text_color }};
@@ -40,55 +76,80 @@
     border: none;
     cursor: pointer;
   }
+
+  .hero-banner__video {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero-banner__media {
+      content: url({{ section.settings.image_mobile | image_url | default: section.settings.image_desktop | image_url }});
+    }
+  }
 {%- endstyle -%}
 
-<div id="HeroBanner-{{ section.id }}" class="hero-banner">
-  {%- comment -%} Hero Image Rendering {%- endcomment -%}
-  <picture>
-    {%- if section.settings.image_mobile != blank -%}
-      <source srcset="{{ section.settings.image_mobile | image_url }}" media="(max-width: 749px)">
-    {%- endif -%}
-    <img
-      src="{{ section.settings.image_desktop | image_url }}"
-      alt="{{ section.settings.alt_text }}"
-      class="hero-banner__image"
-    >
-  </picture>
+{% if section.settings.image_desktop != blank
+  or section.settings.image_mobile != blank
+  or section.settings.video_url != blank
+%}
+  {% if section.settings.header != blank %}
+    <div id="HeroBanner-{{ section.id }}" class="hero-banner">
+      {% if section.settings.video_url != blank %}
+        <!-- Display video if a video URL is provided -->
+        <video class="hero-banner__video" autoplay muted loop playsinline>
+          <source src="{{ section.settings.video_url }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      {% else %}
+        <!-- Display image if no video is provided -->
+        <img
+          src="{{ section.settings.image_desktop | image_url | default: section.settings.image_mobile | image_url }}"
+          class="hero-banner__media"
+          alt="{{ section.settings.alt_text }}"
+        >
+      {% endif %}
 
-  {%- comment -%} Content Section {%- endcomment -%}
-  <div class="hero-banner__content">
-    {%- comment -%} Header {%- endcomment -%}
-    {%- if section.settings.header != blank -%}
-      <h1 class="hero-banner__heading">{{ section.settings.header }}</h1>
-    {%- endif -%}
-
-    {%- comment -%} Paragraph {%- endcomment -%}
-    {%- if section.settings.paragraph != blank -%}
-      <p class="hero-banner__paragraph">{{ section.settings.paragraph }}</p>
-    {%- endif -%}
-
-    {%- comment -%} Buttons {%- endcomment -%}
-    {%- if section.settings.button_text_1 != blank or section.settings.button_text_2 != blank -%}
-      <div class="hero-banner__buttons">
-        {%- if section.settings.button_text_1 != blank -%}
-          <a href="{{ section.settings.button_link_1 }}" class="hero-banner__button">
-            {{- section.settings.button_text_1 -}}
-          </a>
+      <div class="hero-banner__content">
+        {%- if section.settings.header != blank -%}
+          <h1 class="hero-banner__heading">{{ section.settings.header }}</h1>
         {%- endif -%}
-        {%- if section.settings.button_text_2 != blank -%}
-          <a href="{{ section.settings.button_link_2 }}" class="hero-banner__button">
-            {{- section.settings.button_text_2 -}}
-          </a>
+
+        {%- if section.settings.paragraph != blank -%}
+          <p class="hero-banner__paragraph">{{ section.settings.paragraph }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.button_text_1 != blank or section.settings.button_text_2 != blank -%}
+          <div class="hero-banner__buttons">
+            {%- if section.settings.button_text_1 != blank -%}
+              <a href="{{ section.settings.button_link_1 }}" class="hero-banner__button">
+                {{- section.settings.button_text_1 -}}
+              </a>
+            {%- endif -%}
+            {%- if section.settings.button_text_2 != blank -%}
+              <a href="{{ section.settings.button_link_2 }}" class="hero-banner__button">
+                {{- section.settings.button_text_2 -}}
+              </a>
+            {%- endif -%}
+          </div>
         {%- endif -%}
       </div>
-    {%- endif -%}
-  </div>
-</div>
+    </div>
+  {% endif %}
+{% endif %}
 
 {% schema %}
 {
   "name": "Hero Banner",
   "settings": [
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Video URL",
+      "info": "Upload your video to Shopify Files and paste the URL here (MP4 format is recommended)."
+    },
     {
       "type": "image_picker",
       "id": "image_desktop",
@@ -260,12 +321,6 @@
     },
     {
       "type": "checkbox",
-      "id": "stack_images_on_mobile",
-      "label": "Stack Images on Mobile",
-      "default": false
-    },
-    {
-      "type": "checkbox",
       "id": "show_text_below",
       "label": "Show Text Below Image",
       "default": false
@@ -281,17 +336,6 @@
           "id": "heading",
           "label": "Heading",
           "default": "Hero Banner"
-        },
-        {
-          "type": "select",
-          "id": "heading_size",
-          "label": "Heading Size",
-          "default": "h1",
-          "options": [
-            { "value": "h0", "label": "H0" },
-            { "value": "h1", "label": "H1" },
-            { "value": "h2", "label": "H2" }
-          ]
         }
       ]
     },
