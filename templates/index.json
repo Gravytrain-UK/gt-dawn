@@ -198,8 +198,8 @@
         "padding_bottom": 36
       }
     },
-    "carousel_slider": {
-      "type": "carousel-slider"
+    "product_slider": {
+      "type": "product-slider"
     }
   },
   "order": [
@@ -209,6 +209,6 @@
     "collage",
     "video",
     "multicolumn",
-    "carousel_slider"
+    "product_slider"
   ]
 }
