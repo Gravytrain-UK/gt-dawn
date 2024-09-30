@@ -1,0 +1,218 @@
+<div class="content-multiple-category-listings" style="background-color: {{ section.settings.background_color }}">
+  <div class="wrap">
+    <div class="row">
+      <div class="col">
+        <div class="category-inner" style="background-image: url('{{ section.settings.content_multiple_category_listings_image_1 | img_url: 'large' }}');">
+          <div class="inner">
+            <div class="match-content">
+              <a href="" title="">
+                <h2>{{ section.settings.content_multiple_category_listings_heading_1 }}</h2>
+
+                <!-- Desktop Paragraph for Card 1 -->
+                <p class="not-tablet desktop">{{ section.settings.content_multiple_category_listings_text_desktop_1 }}</p>
+
+                <!-- Mobile Paragraph for Card 1 -->
+                <p class="mobile tablet">{{ section.settings.content_multiple_category_listings_text_mobile_1 }}</p>
+              </a>
+            </div>
+            <a href="{{ section.settings.content_multiple_category_listings_button_link_1 }}" class="btn btn-secondary">
+              {{ section.settings.content_multiple_category_listings_button_label_1 }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="category-inner" style="background-image: url('{{ section.settings.content_multiple_category_listings_image_2 | img_url: 'large' }}');">
+          <div class="inner">
+            <div class="match-content">
+              <a href="" title="">
+                <h2>{{ section.settings.content_multiple_category_listings_heading_2 }}</h2>
+
+                <!-- Desktop Paragraph for Card 2 -->
+                <p class="not-tablet desktop">{{ section.settings.content_multiple_category_listings_text_desktop_2 }}</p>
+
+                <!-- Mobile Paragraph for Card 2 -->
+                <p class="mobile tablet">{{ section.settings.content_multiple_category_listings_text_mobile_2 }}</p>
+              </a>
+            </div>    
+            <a href="{{ section.settings.content_multiple_category_listings_button_link_2 }}" class="btn btn-secondary">
+              {{ section.settings.content_multiple_category_listings_button_label_2 }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+
+/* Add background colour and lazyload for images*/
+
+.content-multiple-category-listings {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Space between cards */
+  padding: 20px; /* Optional padding to add spacing inside the background */
+}
+
+.content-multiple_category_listings .category-inner {
+  margin-bottom: 20px;
+  padding: 60% 20px 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+@media only screen and (min-width: 768px) {
+  .content-multiple_category_listings .category-inner {
+    margin-bottom: 0;
+  }
+}
+@media only screen and (min-width: 1030px) {
+  .content-multiple_category_listings .category-inner {
+    padding: 376px 40px 40px;
+  }
+}
+.content-multiple_category_listings .category-inner:before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: 50px;
+  right: 0;
+  height: 240px;
+  background: linear-gradient(0deg, rgba(34, 34, 34, 0.8) 0%, rgba(34, 34, 34, 0) 99.9%);
+  background-blend-mode: normal;
+  width: 100%;
+  z-index: 100;
+}
+@media only screen and (min-width: 768px) {
+  .content-multiple_category_listings .category-inner:before {
+    height: 300px;
+    bottom: 62px;
+    background: linear-gradient(0deg, rgba(34, 34, 34, 0.9) 0%, rgba(34, 34, 34, 0) 99.9%);
+    background-blend-mode: normal;
+  }
+}
+.content-multiple_category_listings .category-inner .inner {
+  position: relative;
+  z-index: 200;
+}
+.content-multiple_category_listings .category-inner .match-content {
+  margin-bottom: 10px;
+}
+.content-multiple_category_listings .category-inner h2 {
+  color: #fff;
+  font-family: "miller-display", serif;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* Show only the desktop paragraph on larger screens */
+.not-tablet.desktop {
+  display: block;
+}
+
+.mobile.tablet {
+  display: none;
+}
+
+/* Show only the mobile paragraph on smaller screens */
+@media (max-width: 768px) {
+  .not-tablet.desktop {
+    display: none;
+  }
+  .mobile.tablet {
+    display: block;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "t:sections.content-multiple-category_listings.name",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "content_multiple_category_listings_heading_1",
+      "label": "Heading for Card 1",
+      "default": "BEDROOM 1"
+    },
+    {
+      "type": "textarea",
+      "id": "content_multiple_category_listings_text_desktop_1",
+      "label": "Paragraph Text (Desktop) for Card 1",
+      "default": "Elevate your sleep with our collection of luxurious 100% cotton bed linen for Card 1."
+    },
+    {
+      "type": "textarea",
+      "id": "content_multiple_category_listings_text_mobile_1",
+      "label": "Paragraph Text (Mobile) for Card 1",
+      "default": "Wake up feeling refreshed every morning with our premium bedding collection for Card 1."
+    },
+    {
+      "type": "image_picker",
+      "id": "content_multiple_category_listings_image_1",
+      "label": "Background Image for Card 1"
+    },
+    {
+      "type": "url",
+      "id": "content_multiple_category_listings_button_link_1",
+      "label": "Button Link for Card 1"
+    },
+    {
+      "type": "text",
+      "id": "content_multiple_category_listings_button_label_1",
+      "label": "Button Label for Card 1",
+      "default": "Shop Now"
+    },
+    {
+      "type": "text",
+      "id": "content_multiple_category_listings_heading_2",
+      "label": "Heading for Card 2",
+      "default": "BEDROOM 2"
+    },
+    {
+      "type": "textarea",
+      "id": "content_multiple_category_listings_text_desktop_2",
+      "label": "Paragraph Text (Desktop) for Card 2",
+      "default": "Elevate your sleep with our collection of luxurious 100% cotton bed linen for Card 2."
+    },
+    {
+      "type": "textarea",
+      "id": "content_multiple_category_listings_text_mobile_2",
+      "label": "Paragraph Text (Mobile) for Card 2",
+      "default": "Wake up feeling refreshed every morning with our premium bedding collection for Card 2."
+    },
+    {
+      "type": "image_picker",
+      "id": "content_multiple_category_listings_image_2",
+      "label": "Background Image for Card 2"
+    },
+    {
+      "type": "url",
+      "id": "content_multiple_category_listings_button_link_2",
+      "label": "Button Link for Card 2"
+    },
+    {
+      "type": "text",
+      "id": "content_multiple_category_listings_button_label_2",
+      "label": "Button Label for Card 2",
+      "default": "Shop Now"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f0f0f0"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.content-multiple-category_listings.name"
+    }
+  ]
+}
+{% endschema %}
